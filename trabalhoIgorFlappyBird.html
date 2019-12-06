@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Flappy Bird</title>
+
+            <script src="ImageLibrary.js"></script>
+
+  </head>
+  <body>
+    <h1>Flappy Bird</h1>
+    <canvas width="450" height="500">
+
+  <script>
+        var tela = document.getElementsByTagName("canvas")[0];
+        var ctx = tela.getContext("2d");
+        var il = new ImageLibrary();
+        var dt;
+        var anterior;
+
+        var cnv = document.querySelector("canvas");
+
+        var escreveTela;
+
+        var menuAparece=true;
+        var inteiro;
+
+
+        var flappyX=flappyY=100;
+        var flappyVelY=2;
+        var flappyAcelY=0.5;
+        var jumping = true;
+
+        var canoX=450;
+        var canoVel=-5;
+        var canoY=0;
+        var aberturaCanoY=50;
+        var img = new Image();
+        var pontuacao = 0;
+
+
+        function limpaTela(){
+          ctx.fillStyle = "black";
+          ctx.fillRect(0,0, tela.width,tela.height);
+        }
+
+
+//Menu
+
+
+//Cria personagens do jogo
+
+//Flappy
+function flappyBird(){
+  ctx.fillStyle = "green";
+
+  ctx.beginPath();
+  ctx.arc(flappyX, flappyY, 15, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.stroke();
+}
+
+function flappyConstantState(){
+  if(flappyY<=tela.height){
+      flappyY+=flappyVelY;
+  }
+  if(flappyAcelY>=0.5){
+    jumping=false;
+  }
+}
+
+function flappyGravity(){
+
+      flappyVelY+=flappyAcelY;
+  }
+
+function flappyJumping(){
+          flappyVelY=0;
+          flappyAcelY=-0.8;
+}
+
+function flappyStopJumping(){
+
+      if(jumping===true){
+        flappyAcelY+=0.1;
+      }
+
+}
+
+function flappyLose(){
+
+    if(((flappyY-15<aberturaCanoY || flappyY+15>aberturaCanoY+100) && flappyX-15<canoX+70 && flappyX+15>canoX)||flappyY>tela.height){
+      flappyVelY=0;
+      flappyAcelY=0;
+      canoVel=0;
+    }
+}
+
+function aumentaPontuacao(){
+
+    if(((flappyY>aberturaCanoY || flappyY<aberturaCanoY+100) && flappyX<canoX+70 && flappyX>canoX + 60)){
+      this.pontuacao++;
+    }
+}
+
+//Canos
+
+function cano(){
+
+  ctx.fillStyle = "red";
+  ctx.fillRect(canoX,canoY,70 ,tela.height);
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(canoX,aberturaCanoY,70 ,100);
+
+}
+
+function canoMove(){
+  canoX+=canoVel;
+}
+
+function canoNewPosition(){
+
+  if(canoX<-100){
+    canoX=450;
+    aberturaCanoY=Math.random()*350
+  }
+
+}
+
+//Pontuação
+    function pontuacao(ctx){
+      ctx.font = "20px Verdana";
+      ctx.fillStyle = "white";
+      ctx.fillText("pontuação:", 10,30);
+
+    }
+
+//Looping infinito do jogo
+        function passo(t){
+
+          dt = (t - anterior)/1000;
+
+
+          limpaTela();
+
+            limpaTela();
+            cano();
+            canoMove();
+            canoNewPosition();
+
+
+            flappyBird(this.ctx);
+            flappyConstantState();
+            flappyGravity();
+            flappyStopJumping();
+
+            ctx.font = "20px Verdana";
+            ctx.fillStyle = "white";
+            ctx.fillText("pontuação: "+this.pontuacao, 10,30);
+
+             aumentaPontuacao();
+
+
+            flappyLose();
+
+
+
+          anterior = t;
+          requestAnimationFrame(passo);
+          }
+
+
+          requestAnimationFrame(passo);
+
+          //controles
+
+
+            addEventListener("keydown", function(e){
+              if(jumping==false){
+                flappyJumping();
+                jumping=true;
+                }
+
+            });
+
+
+
+
+
+  </script>
+
+
+  </body>
+</html>
